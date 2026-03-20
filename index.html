@@ -20,72 +20,87 @@
     header {
       background: white;
       border-bottom: 1px solid #e0e0e0;
-      padding: 10px 16px;
+      padding: 0 12px;
+      height: 48px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
       flex-shrink: 0;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       z-index: 100;
     }
 
-    .app-title {
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .header-icon-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 16px;
-      font-weight: 700;
-      color: #2c7be5;
+      color: #555;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .header-icon-btn:hover { background: #f0f2f5; }
+    .header-icon-btn.active { background: #e8f0fd; color: #2c7be5; }
+
+    .header-divider {
+      width: 1px;
+      height: 20px;
+      background: #e0e0e0;
+      margin: 0 4px;
       flex-shrink: 0;
     }
 
     .breadcrumbs {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
       flex-wrap: nowrap;
       overflow-x: auto;
       overflow-y: hidden;
       scrollbar-width: thin;
-      scrollbar-color: #c0c8d8 #e8edf5;
-      padding-bottom: 4px;
+      scrollbar-color: #c0c8d8 transparent;
+      min-width: 0;
+      padding-bottom: 2px;
     }
 
-    .breadcrumbs::-webkit-scrollbar {
-      height: 4px;
-      display: block;
-    }
-
-    .breadcrumbs::-webkit-scrollbar-track {
-      background: #e8edf5;
-      border-radius: 2px;
-    }
-
-    .breadcrumbs::-webkit-scrollbar-thumb {
-      background: #c0c8d8;
-      border-radius: 2px;
-    }
+    .breadcrumbs::-webkit-scrollbar { height: 3px; }
+    .breadcrumbs::-webkit-scrollbar-thumb { background: #c0c8d8; border-radius: 2px; }
 
     .breadcrumb-item {
       font-size: 13px;
       color: #2c7be5;
       cursor: pointer;
-      padding: 3px 8px;
-      border-radius: 12px;
+      padding: 3px 6px;
+      border-radius: 10px;
       white-space: nowrap;
       transition: background 0.15s;
+      flex-shrink: 0;
     }
-
     .breadcrumb-item:hover { background: #e8f0fd; }
-
-    .breadcrumb-item.current {
-      color: #555;
-      cursor: default;
-      font-weight: 600;
-    }
-
+    .breadcrumb-item.current { color: #333; cursor: default; font-weight: 600; }
     .breadcrumb-item.current:hover { background: none; }
+    .breadcrumb-sep { color: #bbb; font-size: 13px; flex-shrink: 0; }
 
-    .breadcrumb-sep {
-      color: #aaa;
-      font-size: 13px;
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+      margin-left: 8px;
     }
 
     /* ===== パネルコンテナ ===== */
@@ -108,143 +123,162 @@
     .panel.state-behind   { transform: translateX(-30%); }
     .panel.state-incoming { transform: translateX(100%); }
 
-    /* ===== パネル内容 ===== */
+    /* ===== パネルコンテンツ ===== */
     .panel-scroll {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
       position: relative;
       -webkit-overflow-scrolling: touch;
+      background: #f5f5f5;
     }
 
     .panel-content {
-      padding: 24px 20px 120px;
+      padding: 20px;
       position: relative;
       min-height: 100%;
     }
 
-    /* PDF モックスタイル */
-    .pdf-mock {
-      border: 1px solid #ccc;
+    /* ===== ドキュメント風レイアウト（PDF・AI回答共通） ===== */
+    .doc-page {
+      background: white;
       border-radius: 4px;
-      padding: 24px;
-      background: #fafafa;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      padding: 32px 28px;
+      min-height: 400px;
       font-size: 15px;
       line-height: 1.8;
+      color: #222;
     }
 
-    .pdf-mock h3 {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 8px;
+    .doc-page h3 {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
     }
 
-    .pdf-problem {
+    .doc-problem {
       font-size: 16px;
       font-weight: 600;
       margin: 16px 0 8px;
     }
 
-    .pdf-answer-area {
+    .doc-answer-area {
       border: 1px dashed #aaa;
       border-radius: 4px;
       min-height: 80px;
       padding: 12px;
-      background: white;
+      background: #fafafa;
       color: #c0392b;
       font-size: 18px;
       font-style: italic;
       margin-top: 8px;
     }
 
-    /* 採点結果スタイル */
-    .scoring-result {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .doc-section {
+      margin-bottom: 20px;
     }
 
-    .result-badge {
+    .doc-section-label {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .doc-result-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 18px;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 16px;
       font-weight: 700;
-      align-self: flex-start;
+      margin-bottom: 20px;
     }
+    .doc-result-badge.wrong { background: #fde8e8; color: #c0392b; }
+    .doc-result-badge.correct { background: #e8f8e8; color: #27ae60; }
 
-    .result-badge.wrong { background: #fde8e8; color: #c0392b; }
-    .result-badge.correct { background: #e8f8e8; color: #27ae60; }
-
-    .result-section {
-      background: #f8f9fa;
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .result-section h4 {
-      font-size: 13px;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-    }
-
-    .result-section p {
-      font-size: 15px;
-      line-height: 1.7;
-      color: #333;
-    }
-
-    .result-answer {
+    .doc-answer-text {
       font-size: 20px;
       font-weight: 700;
       color: #2c7be5;
       font-family: 'Courier New', monospace;
     }
 
-    /* AI回答スタイル */
-    .ai-response {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .ai-response h4 {
-      font-size: 14px;
-      color: #2c7be5;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .ai-response p {
+    .doc-explanation {
       font-size: 15px;
       line-height: 1.8;
       color: #333;
     }
 
-    .ai-response .math {
-      background: #f0f4ff;
-      border-left: 3px solid #2c7be5;
-      padding: 12px 16px;
-      border-radius: 0 8px 8px 0;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
-      line-height: 2;
+    /* 解答記入パネル */
+    .answer-canvas {
+      border: 2px dashed #aaa;
+      border-radius: 8px;
+      min-height: 140px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c0392b;
+      font-size: 18px;
+      font-style: italic;
+      margin: 12px 0 20px;
     }
 
-    .hint-text {
+    .send-btn-large {
+      width: 100%;
+      padding: 14px;
+      background: #2c7be5;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .send-btn-large:hover { background: #1a6cd4; }
+
+    /* 質問記入パネル */
+    .capture-preview {
+      border: 2px solid #2c7be5;
+      border-radius: 8px;
+      min-height: 90px;
+      background: #f0f4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2c7be5;
       font-size: 13px;
-      color: #888;
+      gap: 8px;
+      margin: 8px 0 20px;
+    }
+
+    .question-textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .question-textarea:focus { border-color: #2c7be5; }
+
+    .hint-text {
+      font-size: 12px;
+      color: #aaa;
       text-align: center;
       padding: 8px;
-      border: 1px dashed #ccc;
-      border-radius: 8px;
-      margin-top: 8px;
+      margin-top: 16px;
     }
 
     /* ===== 選択オーバーレイ ===== */
@@ -263,115 +297,29 @@
       pointer-events: none;
       display: none;
     }
-
-    /* ===== 入力バー ===== */
-    .input-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid #e0e0e0;
-      padding: 12px 16px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-      box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
-      z-index: 200;
-    }
-
-    .input-bar.visible { transform: translateY(0); }
-
-    .input-bar-inner {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .selection-hint {
-      font-size: 12px;
-      color: #888;
-    }
-
-    .input-bar textarea {
-      width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 15px;
-      resize: none;
-      outline: none;
-      font-family: inherit;
-      line-height: 1.5;
-      max-height: 100px;
-    }
-
-    .input-bar textarea:focus { border-color: #2c7be5; }
-
-    .send-btn {
-      background: #2c7be5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      align-self: flex-end;
-      transition: background 0.15s;
-    }
-
-    .send-btn:hover { background: #1a6cd4; }
-
-    .cancel-btn {
-      background: none;
-      border: none;
-      color: #888;
-      font-size: 13px;
-      cursor: pointer;
-      padding: 4px;
-      align-self: flex-end;
-    }
-
-    /* ===== パネルタイプラベル ===== */
-    .panel-type-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #aaa;
-      margin-bottom: 16px;
-    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="app-title">TutoTuto</div>
-  <div class="breadcrumbs" id="breadcrumbs"></div>
+  <div class="header-left">
+    <button class="header-icon-btn" title="ホーム">🏠</button>
+    <button class="header-icon-btn active" title="ページビュー">📖</button>
+    <button class="header-icon-btn" title="AB比較">AB</button>
+    <div class="header-divider"></div>
+    <div class="breadcrumbs" id="breadcrumbs"></div>
+  </div>
+  <div class="header-right" id="toolbarRight">
+    <!-- パネルに応じて動的に変わる -->
+  </div>
 </header>
 
 <div class="panel-viewport" id="panelViewport"></div>
-
-<div class="input-bar" id="inputBar">
-  <div class="input-bar-inner">
-    <div class="selection-hint" id="selectionHint"></div>
-    <textarea id="inputText" rows="2" placeholder="質問やコメントを入力..."></textarea>
-  </div>
-  <button class="cancel-btn" id="cancelBtn">✕</button>
-  <button class="send-btn" id="sendBtn">送信</button>
-</div>
 
 <script>
 // ===== ダミーデータ =====
 const DUMMY_RESPONSES = {
   scoring: {
-    title: '採点結果',
-    correct: false,
     yourAnswer: 'x = 2',
     correctAnswer: 'x = 3',
     explanation: '移項するとき、符号が変わることに注意しましょう。\n\n2x + 5 = 11 を解くには、まず両辺から5を引きます。\n2x = 6 となり、両辺を2で割ると x = 3 です。\n\nあなたは 2x = 4 と計算してしまいました。移項後の計算を確認しましょう。'
@@ -402,74 +350,121 @@ let activeOverlay = null;
 let activeSelectionRect = null;
 let aiResponseIndex = 0;
 
-// ===== パネル作成 =====
+// ===== ツールバー更新 =====
+function updateToolbar() {
+  const toolbar = document.getElementById('toolbarRight');
+  const type = panels[currentIndex]?.type;
+
+  if (type === 'pdf' || type === 'scoring' || type === 'ai') {
+    toolbar.innerHTML = `
+      <button class="header-icon-btn active" title="ペン">✏️</button>
+      <button class="header-icon-btn" title="テキスト">T</button>
+      <button class="header-icon-btn" title="消しゴム">🧹</button>
+      <button class="header-icon-btn" title="範囲選択">⬜</button>
+    `;
+  } else if (type === 'answer') {
+    toolbar.innerHTML = `
+      <button class="header-icon-btn active" title="ペン">✏️</button>
+      <button class="header-icon-btn" title="テキスト">T</button>
+      <button class="header-icon-btn" title="消しゴム">🧹</button>
+      <button class="header-icon-btn" title="採点する" onclick="handleScoring()">✅</button>
+    `;
+  } else if (type === 'question') {
+    toolbar.innerHTML = `
+      <button class="header-icon-btn active" title="ペン">✏️</button>
+      <button class="header-icon-btn" title="テキスト">T</button>
+      <button class="header-icon-btn" title="消しゴム">🧹</button>
+      <button class="header-icon-btn" title="送る" onclick="handleQuestionSend()">✅</button>
+    `;
+  } else {
+    toolbar.innerHTML = '';
+  }
+}
+
+// ===== パネルHTML生成 =====
 function createPDFPanelContent() {
   return `
-    <div class="panel-type-label">📄 PDF</div>
-    <div class="pdf-mock">
+    <div class="doc-page">
       <h3>中学数学 方程式 ── 第3問</h3>
-      <div class="pdf-problem">次の方程式を解きなさい。</div>
-      <div style="font-size:20px; font-family:'Courier New',monospace; padding:16px 0;">
+      <div class="doc-problem">次の方程式を解きなさい。</div>
+      <div style="font-size:22px; font-family:'Courier New',monospace; padding:20px 0;">
         2x + 5 = 11
       </div>
-      <div style="font-size:14px; color:#888; margin-bottom:4px;">【解答欄】</div>
-      <div class="pdf-answer-area">x = 2　←（生徒の解答）</div>
+      <div style="font-size:14px; color:#888; margin-bottom:6px;">【解答欄】</div>
+      <div class="doc-answer-area">x = 2　←（生徒の解答）</div>
     </div>
-    <div class="hint-text" style="margin-top:20px;">↑ 採点したい範囲をドラッグで囲んでください</div>
+    <div class="hint-text">採点したい範囲をドラッグで囲んでください</div>
   `;
 }
 
 function createAnswerPanelContent() {
   return `
-    <div class="panel-type-label">✏️ 解答記入</div>
-    <div class="result-section" style="margin-bottom:16px;">
-      <h4>採点対象</h4>
-      <div style="background:#f0f4ff; border-radius:8px; padding:16px; font-family:'Courier New',monospace; font-size:18px; color:#333;">
-        2x + 5 = 11
+    <div class="doc-page">
+      <h3>解答記入</h3>
+      <div class="doc-section">
+        <div class="doc-section-label">採点対象</div>
+        <div style="background:#f0f4ff; border-radius:6px; padding:14px; font-family:'Courier New',monospace; font-size:18px;">
+          2x + 5 = 11
+        </div>
+      </div>
+      <div class="doc-section">
+        <div class="doc-section-label">解答欄（ペンで記入）</div>
+        <div class="answer-canvas">x = 2　←（生徒の解答）</div>
       </div>
     </div>
-    <div class="result-section" style="margin-bottom:24px;">
-      <h4>解答欄（ペンで記入）</h4>
-      <div style="border:2px dashed #aaa; border-radius:8px; min-height:120px; background:white; display:flex; align-items:center; justify-content:center; color:#c0392b; font-size:18px; font-style:italic;">
-        x = 2　←（生徒の解答）
-      </div>
-    </div>
-    <button onclick="handleScoring()" style="width:100%; padding:14px; background:#2c7be5; color:white; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer;">
-      送る
-    </button>
   `;
 }
 
 function createScoringPanelContent(data) {
   return `
-    <div class="panel-type-label">📝 採点結果</div>
-    <div class="scoring-result">
-      <div class="result-badge wrong">❌ 不正解</div>
-      <div class="result-section">
-        <h4>あなたの解答</h4>
-        <p class="result-answer">${data.yourAnswer}</p>
+    <div class="doc-page">
+      <h3>採点結果</h3>
+      <div class="doc-result-badge wrong">❌ 不正解</div>
+      <div class="doc-section">
+        <div class="doc-section-label">あなたの解答</div>
+        <div class="doc-answer-text">${data.yourAnswer}</div>
       </div>
-      <div class="result-section">
-        <h4>正解</h4>
-        <p class="result-answer">${data.correctAnswer}</p>
+      <div class="doc-section">
+        <div class="doc-section-label">正解</div>
+        <div class="doc-answer-text">${data.correctAnswer}</div>
       </div>
-      <div class="result-section">
-        <h4>解説</h4>
-        <p>${data.explanation.replace(/\n/g, '<br>')}</p>
+      <div class="doc-section">
+        <div class="doc-section-label">解説</div>
+        <div class="doc-explanation">${data.explanation.replace(/\n/g, '<br>')}</div>
       </div>
     </div>
-    <div class="hint-text" style="margin-top:20px;">↑ 気になるところをドラッグで囲んで質問できます</div>
+    <div class="hint-text">気になるところをドラッグで囲んで質問できます</div>
   `;
 }
 
 function createAIPanelContent(data) {
   return `
-    <div class="panel-type-label">🤖 AI サポート</div>
-    <div class="ai-response">
-      <h4>${data.title}</h4>
-      <p>${data.content.replace(/\n/g, '<br>')}</p>
+    <div class="doc-page">
+      <h3>AI サポート</h3>
+      <div class="doc-section">
+        <div style="font-size:16px; font-weight:700; color:#2c7be5; margin-bottom:12px;">${data.title}</div>
+        <div class="doc-explanation">${data.content.replace(/\n/g, '<br>')}</div>
+      </div>
     </div>
-    <div class="hint-text" style="margin-top:20px;">↑ さらに気になるところを囲んで深掘りできます</div>
+    <div class="hint-text">さらに気になるところを囲んで深掘りできます</div>
+  `;
+}
+
+function createQuestionPanelContent(captureLabel) {
+  return `
+    <div class="doc-page">
+      <h3>質問記入</h3>
+      <div class="doc-section">
+        <div class="doc-section-label">選択箇所（${captureLabel}）</div>
+        <div class="capture-preview">
+          <span style="font-size:24px;">📷</span> キャプチャ範囲
+        </div>
+      </div>
+      <div class="doc-section">
+        <div class="doc-section-label">質問・コメント（ペンで記入）</div>
+        <div class="answer-canvas" style="color:#333; font-style:normal; font-size:15px;">ここに質問を記入</div>
+      </div>
+    </div>
   `;
 }
 
@@ -479,7 +474,6 @@ function renderPanels() {
 
   panels.forEach((panel, i) => {
     if (!panel.el) {
-      // DOM生成
       const el = document.createElement('div');
       el.className = 'panel state-incoming';
       el.innerHTML = `
@@ -496,7 +490,6 @@ function renderPanels() {
       setupSelectionOverlay(i);
     }
 
-    // state更新
     if (i === currentIndex) {
       panel.el.className = 'panel state-current';
     } else if (i < currentIndex) {
@@ -505,47 +498,43 @@ function renderPanels() {
       panel.el.className = 'panel state-incoming';
     }
   });
+
+  updateToolbar();
 }
 
 // ===== 選択オーバーレイ =====
 function setupSelectionOverlay(index) {
   const overlay = document.getElementById(`overlay-${index}`);
   const rect = document.getElementById(`rect-${index}`);
+  const noSelectTypes = ['answer', 'question'];
+
+  if (noSelectTypes.includes(panels[index]?.type)) {
+    overlay.style.cursor = 'default';
+    overlay.style.pointerEvents = 'none';
+    return;
+  }
 
   function getPos(e) {
     const r = overlay.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-      x: clientX - r.left,
-      y: clientY - r.top
-    };
+    return { x: clientX - r.left, y: clientY - r.top };
   }
 
-  // answer/questionパネルはオーバーレイ無効化
-  const noSelectTypes = ['answer', 'question'];
-  if (noSelectTypes.includes(panels[index]?.type)) {
-    overlay.style.cursor = 'default';
-    overlay.style.pointerEvents = 'none';
-  }
-
-  function startSelect(e) {
-    if (index !== currentIndex) return;
-    if (noSelectTypes.includes(panels[index]?.type)) return;
-    if (e.target !== overlay) return;
+  overlay.addEventListener('mousedown', e => {
+    if (index !== currentIndex || e.target !== overlay) return;
     e.preventDefault();
     clearSelection();
     isSelecting = true;
     activeOverlay = overlay;
     activeSelectionRect = rect;
-    const pos = getPos(e);
-    selectionStart = pos;
-    selection = { x: pos.x, y: pos.y, w: 0, h: 0 };
+    selectionStart = getPos(e);
+    selection = { x: selectionStart.x, y: selectionStart.y, w: 0, h: 0 };
     rect.style.display = 'block';
     updateRect();
-  }
+  });
 
-  function moveSelect(e) {
+  overlay.addEventListener('mousemove', e => {
     if (!isSelecting || activeOverlay !== overlay) return;
     e.preventDefault();
     const pos = getPos(e);
@@ -556,23 +545,60 @@ function setupSelectionOverlay(index) {
       h: Math.abs(pos.y - selectionStart.y)
     };
     updateRect();
-  }
+  });
 
-  function endSelect(e) {
+  overlay.addEventListener('mouseup', e => {
     if (!isSelecting || activeOverlay !== overlay) return;
     isSelecting = false;
-    if (selection.w > 20 && selection.h > 20) {
-      const panelType = panels[index]?.type;
-      if (panelType === 'pdf') {
+    if (selection && selection.w > 20 && selection.h > 20) {
+      if (panels[index]?.type === 'pdf') {
         handlePDFSelection();
       } else {
         handleQuestionSelection(index);
       }
-
     } else {
       clearSelection();
     }
-  }
+  });
+
+  overlay.addEventListener('touchstart', e => {
+    if (index !== currentIndex) return;
+    e.preventDefault();
+    clearSelection();
+    isSelecting = true;
+    activeOverlay = overlay;
+    activeSelectionRect = rect;
+    selectionStart = getPos(e);
+    selection = { x: selectionStart.x, y: selectionStart.y, w: 0, h: 0 };
+    rect.style.display = 'block';
+  }, { passive: false });
+
+  overlay.addEventListener('touchmove', e => {
+    if (!isSelecting || activeOverlay !== overlay) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    selection = {
+      x: Math.min(pos.x, selectionStart.x),
+      y: Math.min(pos.y, selectionStart.y),
+      w: Math.abs(pos.x - selectionStart.x),
+      h: Math.abs(pos.y - selectionStart.y)
+    };
+    updateRect();
+  }, { passive: false });
+
+  overlay.addEventListener('touchend', e => {
+    if (!isSelecting || activeOverlay !== overlay) return;
+    isSelecting = false;
+    if (selection && selection.w > 20 && selection.h > 20) {
+      if (panels[index]?.type === 'pdf') {
+        handlePDFSelection();
+      } else {
+        handleQuestionSelection(index);
+      }
+    } else {
+      clearSelection();
+    }
+  });
 
   function updateRect() {
     rect.style.left = selection.x + 'px';
@@ -580,50 +606,19 @@ function setupSelectionOverlay(index) {
     rect.style.width = selection.w + 'px';
     rect.style.height = selection.h + 'px';
   }
-
-  overlay.addEventListener('mousedown', startSelect);
-  overlay.addEventListener('mousemove', moveSelect);
-  overlay.addEventListener('mouseup', endSelect);
-  overlay.addEventListener('touchstart', startSelect, { passive: false });
-  overlay.addEventListener('touchmove', moveSelect, { passive: false });
-  overlay.addEventListener('touchend', endSelect);
 }
 
 function clearSelection() {
-  if (activeSelectionRect) {
-    activeSelectionRect.style.display = 'none';
-  }
+  if (activeSelectionRect) activeSelectionRect.style.display = 'none';
   selection = null;
   activeSelectionRect = null;
+  activeOverlay = null;
 }
 
-// ===== 入力バー =====
-function showInputBar(panelIndex) {
-  const panel = panels[panelIndex];
-  const hint = panel.type === 'pdf'
-    ? '選択範囲を採点します'
-    : panel.type === 'answer'
-    ? '選択範囲を採点します（コメント任意）'
-    : '選択範囲について質問します';
-
-  document.getElementById('selectionHint').textContent = hint;
-  document.getElementById('inputText').value = '';
-  const bar = document.getElementById('inputBar');
-  bar.classList.add('visible');
-  setTimeout(() => document.getElementById('inputText').focus(), 300);
-}
-
-function hideInputBar() {
-  document.getElementById('inputBar').classList.remove('visible');
-  clearSelection();
-}
-
-// ===== パネル追加 =====
+// ===== パネル管理 =====
 function pushPanel(type, html, label) {
-  // 現在より後のパネルを削除
   panels.slice(currentIndex + 1).forEach(p => p.el && p.el.remove());
   panels = panels.slice(0, currentIndex + 1);
-
   panels.push({ type, html, label, el: null });
   currentIndex = panels.length - 1;
   renderPanels();
@@ -635,10 +630,8 @@ function goToPanel(index) {
   currentIndex = index;
   renderPanels();
   updateBreadcrumbs();
-  hideInputBar();
 }
 
-// ===== パンくず =====
 function updateBreadcrumbs() {
   const container = document.getElementById('breadcrumbs');
   container.innerHTML = panels.map((p, i) => {
@@ -649,79 +642,35 @@ function updateBreadcrumbs() {
             onclick="goToPanel(${i})">${p.label}</span>
     `;
   }).join('');
-  // 最新のパンくずが見えるよう右端にスクロール
   container.scrollLeft = container.scrollWidth;
 }
 
-// ===== 送信処理 =====
-function handleSend() {
-  const text = document.getElementById('inputText').value.trim();
-  const currentPanel = panels[currentIndex];
-  hideInputBar();
-
-  if (currentPanel.type === 'scoring' || currentPanel.type === 'ai') {
-    // AI深掘りパネル
-    const responses = DUMMY_RESPONSES.ai;
-    const resp = responses[aiResponseIndex % responses.length];
-    aiResponseIndex++;
-    pushPanel('ai', createAIPanelContent(resp), resp.title.slice(0, 10) + '…');
-  }
-}
-
-// ===== PDF範囲選択後 → 解答記入パネル =====
+// ===== アクション =====
 function handlePDFSelection() {
   clearSelection();
   pushPanel('answer', createAnswerPanelContent(), '解答記入');
 }
 
-// ===== 採点/AI結果で範囲選択後 → 質問記入パネル =====
 function handleQuestionSelection(panelIndex) {
   const captureLabel = panels[panelIndex].type === 'scoring' ? '採点結果の一部' : 'AI回答の一部';
   clearSelection();
   pushPanel('question', createQuestionPanelContent(captureLabel), '質問記入');
 }
 
-function createQuestionPanelContent(captureLabel) {
-  return `
-    <div class="panel-type-label">💬 質問記入</div>
-    <div class="result-section" style="margin-bottom:16px;">
-      <h4>選択箇所（${captureLabel}）</h4>
-      <div style="border:2px solid #2c7be5; border-radius:8px; min-height:80px; background:#f0f4ff; display:flex; align-items:center; justify-content:center; color:#2c7be5; font-size:13px; gap:8px;">
-        <span style="font-size:24px;">📷</span> キャプチャ範囲
-      </div>
-    </div>
-    <div class="result-section" style="margin-bottom:24px;">
-      <h4>質問・コメント</h4>
-      <textarea id="questionInput" rows="4" style="width:100%; border:1px solid #ddd; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; resize:none; outline:none;" placeholder="ここに質問を入力..."></textarea>
-    </div>
-    <button onclick="handleQuestionSend()" style="width:100%; padding:14px; background:#2c7be5; color:white; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer;">
-      送る
-    </button>
-  `;
-}
-
-function handleQuestionSend() {
-  const responses = DUMMY_RESPONSES.ai;
-  const resp = responses[aiResponseIndex % responses.length];
-  aiResponseIndex++;
-  pushPanel('ai', createAIPanelContent(resp), resp.title.slice(0, 10) + '…');
-}
-
-// ===== 採点ボタン =====
 function handleScoring() {
   const data = DUMMY_RESPONSES.scoring;
   pushPanel('scoring', createScoringPanelContent(data), '採点結果');
 }
 
-// ===== イベント =====
-document.getElementById('sendBtn').addEventListener('click', handleSend);
-document.getElementById('cancelBtn').addEventListener('click', hideInputBar);
-document.getElementById('inputText').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    handleSend();
-  }
-});
+function handleQuestionSend() {
+  const resp = DUMMY_RESPONSES.ai[aiResponseIndex % DUMMY_RESPONSES.ai.length];
+  aiResponseIndex++;
+  pushPanel('ai', createAIPanelContent(resp), resp.title.slice(0, 12) + '…');
+}
+
+function handleConfirm() {
+  // ツールバーの確定ボタン（将来の実装用）
+}
 
 // ===== 初期化 =====
 pushPanel('pdf', createPDFPanelContent(), 'PDF');
