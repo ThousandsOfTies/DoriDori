@@ -1,4 +1,7 @@
 # 依存リポジトリのバージョン
 # 更新: make update-versions
 
-# サブリポジトリが追加されたらここに記録される
+drawing-common=d516ba7f4ba0e2ace8cfdc6f216db98dcc06c6c0
+home-teacher-common=a0db3ca5b2d894c522954bad1eb32282288360d4
+doridori-app=a7e332aeec12251234438da3fd2d60b3c92f981f
+
