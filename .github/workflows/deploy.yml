@@ -18,15 +18,90 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: https://hometeacher-api-736494768812.asia-northeast1.run.app
+      VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+      VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+      VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+      VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+      VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+      VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare deploy directory
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configure Git for private repos
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Clone dependencies
+        run: |
+          make clone
+
+          # Checkout exact commits from VERSIONS file
+          DRAWING_COMMIT=$(grep "drawing-common=" VERSIONS | cut -d'=' -f2)
+          COMMON_COMMIT=$(grep "home-teacher-common=" VERSIONS | cut -d'=' -f2)
+          APP_COMMIT=$(grep "doridori-app=" VERSIONS | cut -d'=' -f2)
+
+          if [ ! -z "$DRAWING_COMMIT" ]; then
+            echo "Checking out drawing-common at $DRAWING_COMMIT"
+            cd repos/drawing-common
+            git fetch --unshallow 2>/dev/null || git fetch origin
+            git checkout $DRAWING_COMMIT
+            cd ../..
+          fi
+
+          if [ ! -z "$COMMON_COMMIT" ]; then
+            echo "Checking out home-teacher-common at $COMMON_COMMIT"
+            cd repos/home-teacher-common
+            git fetch --unshallow 2>/dev/null || git fetch origin
+            git checkout $COMMON_COMMIT
+            cd ../..
+          else
+            echo "WARNING: No commit hash found for home-teacher-common in VERSIONS"
+          fi
+
+          if [ ! -z "$APP_COMMIT" ]; then
+            echo "Checking out doridori-app at $APP_COMMIT"
+            cd repos/doridori-app
+            git fetch --unshallow 2>/dev/null || git fetch origin
+            git checkout $APP_COMMIT
+            cd ../..
+          else
+            echo "WARNING: No commit hash found for doridori-app in VERSIONS"
+          fi
+
+      - name: Install dependencies
+        run: |
+          cd repos/drawing-common
+          npm install
+          cd ../..
+
+          cd repos/home-teacher-common
+          npm install
+          cd ../..
+
+          cd repos/doridori-app
+          npm install
+          cd ../..
+
+      - name: Build Application
+        run: make build
+        env:
+          NODE_ENV: production
+
+      - name: Move build to deploy directory
         run: |
           mkdir -p deploy
-          cp index.html deploy/
-          touch deploy/.nojekyll
+          cp -r repos/doridori-app/dist/* deploy/
+
+      - name: Add .nojekyll file
+        run: touch deploy/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
