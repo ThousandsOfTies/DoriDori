@@ -1,2 +1,5 @@
-repos/
+# Cloned repositories (managed by Makefile)
+# repos/フォルダ自体は表示、個別リポジトリをignore
+repos/drawing-common/
+repos/home-teacher-proto/
 node_modules/
