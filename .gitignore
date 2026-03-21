@@ -2,4 +2,6 @@
 # repos/フォルダ自体は表示、個別リポジトリをignore
 repos/drawing-common/
 repos/home-teacher-proto/
+repos/home-teacher-common/
+repos/doridori-app/
 node_modules/
