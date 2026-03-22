@@ -297,15 +297,17 @@
       pointer-events: none;
       display: none;
     }
+    .header-icon-btn svg { width: 20px; height: 20px; stroke-width: 2px; }
   </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
 <header>
   <div class="header-left">
-    <button class="header-icon-btn" title="ホーム">🏠</button>
-    <button class="header-icon-btn active" title="ページビュー">📖</button>
-    <button class="header-icon-btn" title="AB比較">AB</button>
+    <button class="header-icon-btn" title="ホーム"><i data-lucide="home"></i></button>
+    <button class="header-icon-btn active" title="ページビュー"><i data-lucide="book-open"></i></button>
+    <button class="header-icon-btn" title="AB比較"><i data-lucide="columns"></i></button>
     <div class="header-divider"></div>
     <div class="breadcrumbs" id="breadcrumbs"></div>
   </div>
@@ -357,24 +359,24 @@ function updateToolbar() {
 
   if (type === 'pdf' || type === 'scoring' || type === 'ai') {
     toolbar.innerHTML = `
-      <button class="header-icon-btn active" title="ペン">✏️</button>
-      <button class="header-icon-btn" title="テキスト">T</button>
-      <button class="header-icon-btn" title="消しゴム">🧹</button>
-      <button class="header-icon-btn" title="範囲選択">⬜</button>
+      <button class="header-icon-btn active" title="ペン"><i data-lucide="pen-tool"></i></button>
+      <button class="header-icon-btn" title="テキスト"><i data-lucide="type"></i></button>
+      <button class="header-icon-btn" title="消しゴム"><i data-lucide="eraser"></i></button>
+      <button class="header-icon-btn" title="範囲選択"><i data-lucide="scan"></i></button>
     `;
   } else if (type === 'answer') {
     toolbar.innerHTML = `
-      <button class="header-icon-btn active" title="ペン">✏️</button>
-      <button class="header-icon-btn" title="テキスト">T</button>
-      <button class="header-icon-btn" title="消しゴム">🧹</button>
-      <button class="header-icon-btn" title="採点する" onclick="handleScoring()">✅</button>
+      <button class="header-icon-btn active" title="ペン"><i data-lucide="pen-tool"></i></button>
+      <button class="header-icon-btn" title="テキスト"><i data-lucide="type"></i></button>
+      <button class="header-icon-btn" title="消しゴム"><i data-lucide="eraser"></i></button>
+      <button class="header-icon-btn" title="採点する" onclick="handleScoring()"><i data-lucide="check-circle"></i></button>
     `;
   } else if (type === 'question') {
     toolbar.innerHTML = `
-      <button class="header-icon-btn active" title="ペン">✏️</button>
-      <button class="header-icon-btn" title="テキスト">T</button>
-      <button class="header-icon-btn" title="消しゴム">🧹</button>
-      <button class="header-icon-btn" title="送る" onclick="handleQuestionSend()">✅</button>
+      <button class="header-icon-btn active" title="ペン"><i data-lucide="pen-tool"></i></button>
+      <button class="header-icon-btn" title="テキスト"><i data-lucide="type"></i></button>
+      <button class="header-icon-btn" title="消しゴム"><i data-lucide="eraser"></i></button>
+      <button class="header-icon-btn" title="送る" onclick="handleQuestionSend()"><i data-lucide="send"></i></button>
     `;
   } else {
     toolbar.innerHTML = '';
@@ -419,7 +421,7 @@ function createScoringPanelContent(data) {
   return `
     <div class="doc-page">
       <h3>採点結果</h3>
-      <div class="doc-result-badge wrong">❌ 不正解</div>
+      <div class="doc-result-badge wrong"><i data-lucide="x-circle" style="width: 20px; height: 20px;"></i> 不正解</div>
       <div class="doc-section">
         <div class="doc-section-label">あなたの解答</div>
         <div class="doc-answer-text">${data.yourAnswer}</div>
@@ -457,7 +459,7 @@ function createQuestionPanelContent(captureLabel) {
       <div class="doc-section">
         <div class="doc-section-label">選択箇所（${captureLabel}）</div>
         <div class="capture-preview">
-          <span style="font-size:24px;">📷</span> キャプチャ範囲
+          <i data-lucide="camera" style="width: 24px; height: 24px;"></i> キャプチャ範囲
         </div>
       </div>
       <div class="doc-section">
@@ -500,6 +502,9 @@ function renderPanels() {
   });
 
   updateToolbar();
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
 }
 
 // ===== 選択オーバーレイ =====
