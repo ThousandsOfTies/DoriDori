@@ -1,3 +1,6 @@
 # 依存リポジトリのバージョン
 # 更新: make update-versions
 
+drawing-common=d516ba7f4ba0e2ace8cfdc6f216db98dcc06c6c0
+home-teacher-common=1bebe357c61290c22cef63eac763f14ebff8a751
+doridori-app=a351181390eeb8527837c435560ad6ce67479658
