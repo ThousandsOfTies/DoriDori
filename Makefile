@@ -1,154 +1,60 @@
-# DoriDori プロジェクト Makefile
-# 依存リポジトリを自動cloneして統合ビルドを行う
+# DoriDori project Makefile
+# Dependencies are pinned as Git submodules in .gitmodules.
 
-.PHONY: help setup clone pull install build clean dev test status update-versions
-
-# ============================================
-# リポジトリ定義
-# ============================================
+.PHONY: help setup init update install build-repos build clean status test dev
 
 REPOS_DIR := repos
-
-# 依存リポジトリ定義
-# 形式: リポジトリ名|GitHubユーザー/リポジトリ|ブランチ
-REPOSITORIES := \
-	drawing-common|ThousandsOfTies/drawing-common|main \
-	home-teacher-common|ThousandsOfTies/home-teacher-common|main \
-	doridori-app|ThousandsOfTies/doridori-app|main
-
-# リポジトリ情報を解析するヘルパー関数
-define get_repo_info
-$(word $(2),$(subst |, ,$(1)))
-endef
-
-REPO_NAMES := $(foreach repo,$(REPOSITORIES),$(call get_repo_info,$(repo),1))
-
-# パス定義
 DRAWING_COMMON := $(REPOS_DIR)/drawing-common
 HOME_TEACHER_COMMON := $(REPOS_DIR)/home-teacher-common
 DORIDORI_APP := $(REPOS_DIR)/doridori-app
-
-# ============================================
-# カラー出力
-# ============================================
-
-GREEN  := \033[0;32m
-BLUE   := \033[0;34m
-YELLOW := \033[0;33m
-RED    := \033[0;31m
-NC     := \033[0m
+SUBMODULES := $(DRAWING_COMMON) $(HOME_TEACHER_COMMON) $(DORIDORI_APP)
 
 .DEFAULT_GOAL := help
 
-# ============================================
-# コマンド
-# ============================================
-
-## help: ヘルプを表示
+## help: Show available commands
 help:
-	@echo "$(BLUE)DoriDori プロジェクト$(NC)"
-	@echo ""
-	@echo "$(GREEN)利用可能なコマンド:$(NC)"
+	@echo "DoriDori project"
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/^## /  make /'
-	@echo ""
-	@echo "$(YELLOW)依存リポジトリ:$(NC)"
-	@echo "  $(REPO_NAMES)"
-	@echo ""
 
-## setup: 初回セットアップ（clone + pull + install + build）
-setup: clone pull install build-repos
-	@echo "$(GREEN)✅ セットアップ完了！$(NC)"
-	@echo "$(BLUE)開発を開始するには: make dev$(NC)"
+## setup: Initialize submodules, install dependencies, and build
+setup: init install build-repos
 
-## clone: 依存リポジトリをクローン
-clone:
-	@echo "$(BLUE)📦 依存リポジトリをクローン中...$(NC)"
-	@mkdir -p $(REPOS_DIR)
-	@$(foreach repo,$(REPOSITORIES), \
-		name=$(call get_repo_info,$(repo),1); \
-		url=https://github.com/$(call get_repo_info,$(repo),2).git; \
-		branch=$(call get_repo_info,$(repo),3); \
-		if [ -d "$(REPOS_DIR)/$$name" ]; then \
-			echo "$(YELLOW)⏭️  $$name は既に存在します$(NC)"; \
-		else \
-			echo "$(BLUE)📥 $$name をクローン中...$(NC)"; \
-			git clone --branch $$branch --depth 1 $$url $(REPOS_DIR)/$$name; \
-		fi; \
-	)
-	@echo "$(GREEN)✅ クローン完了$(NC)"
+## init: Initialize the submodules pinned by this repository
+init:
+	@git submodule update --init --recursive
 
-## pull: すべての依存リポジトリを最新に更新
-pull:
-	@echo "$(BLUE)⬇️  依存リポジトリを更新中...$(NC)"
-	@$(foreach name,$(REPO_NAMES), \
-		if [ -d "$(REPOS_DIR)/$(name)" ]; then \
-			echo "$(BLUE)📥 $(name) を更新中...$(NC)"; \
-			cd $(REPOS_DIR)/$(name) && git pull; \
-		else \
-			echo "$(RED)❌ $(name) が見つかりません。make clone を実行してください$(NC)"; \
-		fi; \
-	)
-	@echo "$(GREEN)✅ 更新完了$(NC)"
+## update: Move submodules to their configured remote branches
+update:
+	@git submodule update --remote --recursive
 
-## install: すべての依存関係をインストール（各リポジトリ個別）
-install: clone
-	@echo "$(BLUE)📦 $(DRAWING_COMMON) の依存関係をインストール中...$(NC)"
+## install: Install dependencies in every submodule
+install: init
 	@cd $(DRAWING_COMMON) && npm install
-	@echo "$(BLUE)📦 $(HOME_TEACHER_COMMON) の依存関係をインストール中...$(NC)"
 	@cd $(HOME_TEACHER_COMMON) && npm install
-	@echo "$(BLUE)📦 $(DORIDORI_APP) の依存関係をインストール中...$(NC)"
 	@cd $(DORIDORI_APP) && npm install
-	@echo "$(GREEN)✅ インストール完了$(NC)"
 
-## build-repos: 依存リポジトリをビルド（drawing-commonのみ）
-build-repos:
-	@echo "$(BLUE)🔨 $(DRAWING_COMMON) をビルド中...$(NC)"
+## build-repos: Build shared libraries
+build-repos: init
 	@cd $(DRAWING_COMMON) && npm run build
-	@echo "$(GREEN)✅ 依存リポジトリのビルド完了$(NC)"
 
-## build: すべてビルド（依存リポジトリ + アプリケーション）
+## build: Build shared libraries and the DoriDori application
 build: build-repos
-	@echo "$(BLUE)🏠 DoriDori をビルド中...$(NC)"
 	@cd $(DORIDORI_APP) && npm run build
-	@echo "$(GREEN)✅ すべてのビルドが完了しました$(NC)"
 
-## dev: 開発モードで起動
-dev: clone install
-	@echo "$(BLUE)🚀 開発サーバーを起動中...$(NC)"
+## dev: Start the DoriDori Vite development server
+dev: init
 	@cd $(DORIDORI_APP) && npm run dev
 
-## clean: ビルド成果物を削除（依存リポジトリは保持）
+## clean: Remove generated build output while keeping submodules
 clean:
-	@echo "$(YELLOW)🧹 ビルド成果物をクリーンアップ中...$(NC)"
-	@$(foreach name,$(REPO_NAMES), \
-		if [ -d "$(REPOS_DIR)/$(name)" ]; then \
-			echo "$(YELLOW)🧹 $(name)/dist を削除中...$(NC)"; \
-			rm -rf $(REPOS_DIR)/$(name)/dist $(REPOS_DIR)/$(name)/deploy; \
-		fi; \
-	)
-	@echo "$(GREEN)✅ クリーンアップ完了$(NC)"
+	@rm -rf $(DRAWING_COMMON)/dist $(HOME_TEACHER_COMMON)/dist $(DORIDORI_APP)/dist deploy
 
-## clean-all: すべて削除（依存リポジトリ、node_modules含む）
-clean-all:
-	@echo "$(RED)🗑️  すべてを削除中...$(NC)"
-	@rm -rf $(REPOS_DIR)
-	@echo "$(GREEN)✅ 完全削除完了$(NC)"
-	@echo "$(YELLOW)⚠️  再開するには: make setup$(NC)"
-
-## status: すべてのリポジトリのgitステータスを表示
+## status: Show parent and submodule Git status
 status:
-	@echo "$(BLUE)📊 Git Status$(NC)"
-	@echo ""
-	@echo "$(YELLOW)DoriDori (メタリポジトリ):$(NC)"
 	@git status -sb
-	@$(foreach name,$(REPO_NAMES), \
-		if [ -d "$(REPOS_DIR)/$(name)/.git" ]; then \
-			echo ""; \
-			echo "$(YELLOW)$(name):$(NC)"; \
-			cd $(REPOS_DIR)/$(name) && git status -sb; \
-		fi; \
-	)
+	@git submodule status
+	@for repo in $(SUBMODULES); do echo ""; echo "$$repo:"; git -C $$repo status -sb; done
 
-## update-versions: サブリポジトリのコミットIDをVERSIONSファイルに記録
-update-versions:
-	@bash scripts/update-versions.sh
+## test: Run test scripts where provided
+test: init
+	@for repo in $(SUBMODULES); do if npm -s --prefix $$repo run | grep -q 'test'; then npm --prefix $$repo test; fi; done

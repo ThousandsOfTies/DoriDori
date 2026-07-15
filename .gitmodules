@@ -1,0 +1,12 @@
+[submodule "repos/drawing-common"]
+	path = repos/drawing-common
+	url = https://github.com/ThousandsOfTies/drawing-common.git
+	branch = main
+[submodule "repos/home-teacher-common"]
+	path = repos/home-teacher-common
+	url = https://github.com/ThousandsOfTies/home-teacher-common.git
+	branch = main
+[submodule "repos/doridori-app"]
+	path = repos/doridori-app
+	url = https://github.com/ThousandsOfTies/doridori-app.git
+	branch = main
