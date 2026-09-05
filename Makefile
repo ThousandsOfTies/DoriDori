@@ -1,7 +1,7 @@
 # DoriDori project Makefile
 # Dependencies are pinned as Git submodules in .gitmodules.
 
-.PHONY: help setup init update install build-repos build clean status test dev
+.PHONY: help setup init update install build-repos build clean status test dev dev-server
 
 REPOS_DIR := repos
 DRAWING_COMMON := $(REPOS_DIR)/drawing-common
@@ -16,14 +16,14 @@ help:
 	@echo "DoriDori project"
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/^## /  make /'
 
-## setup: Initialize submodules, install dependencies, and build
+## setup: Initialize submodules, install dependencies, and build shared libraries
 setup: init install build-repos
 
 ## init: Initialize the submodules pinned by this repository
 init:
 	@git submodule update --init --recursive
 
-## update: Move submodules to their configured remote branches
+## update: Move submodules to their configured remote branches; commit the resulting gitlinks
 update:
 	@git submodule update --remote --recursive
 
@@ -44,6 +44,10 @@ build: build-repos
 ## dev: Start the DoriDori Vite development server
 dev: init
 	@cd $(DORIDORI_APP) && npm run dev
+
+## dev-server: Start the DoriDori API server on port 3003
+dev-server: init
+	@cd $(DORIDORI_APP) && npm run dev:server
 
 ## clean: Remove generated build output while keeping submodules
 clean:

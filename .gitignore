@@ -1,7 +1,7 @@
-# Cloned repositories (managed by Makefile)
-# repos/フォルダ自体は表示、個別リポジトリをignore
-repos/drawing-common/
-repos/home-teacher-proto/
-repos/home-teacher-common/
-repos/doridori-app/
+# Submodules are tracked by Git; do not ignore repos/ entries here.
 node_modules/
+dist/
+deploy/
+.env
+.env.*
+!.env.example
