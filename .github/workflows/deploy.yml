@@ -51,6 +51,9 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Verify deferred assets and offline cache
+        run: npm --prefix repos/doridori-app run test:bundle
+
       - name: Move build to deploy directory
         run: |
           mkdir -p deploy
