@@ -17,8 +17,9 @@ TutoTutoから派生した、PDF教材・手書き解答・AI採点をパネル�
 会話履歴を使う対話、PDF全体のコンテキスト、SNS機能の除外は設計案であり、未実装。
 詳しくは [UI設計メモ](UI_DESIGN_DISCUSSION.md) を参照。
 
-ルートの `index.html` は旧UIモックであり、公開アプリの入口ではない。
-現在の入口は `repos/doridori-app/src/main.tsx`、主要画面は `src/App.tsx` と `src/components/study/StudyPanel.tsx`。
+HTMLの入口は `repos/doridori-app/index.html`、Reactの入口は `repos/doridori-app/src/main.tsx`。
+旧UIモックは `docs/legacy-ui-mock.html` に保管しており、公開アプリには含めない。
+主要画面は `src/App.tsx` と `src/components/study/StudyPanel.tsx`。
 
 ## 構成
 
@@ -27,6 +28,7 @@ DoriDori/
 ├── .gitmodules              # サブモジュールと追従ブランチ
 ├── .github/workflows/       # GitHub Pagesへのデプロイ
 ├── Makefile                 # 統合ビルド・開発コマンド
+├── docs/                    # 旧UIモックなどの参考資料
 └── repos/
     ├── drawing-common/      # Canvas描画基盤
     ├── home-teacher-common/ # 教材管理・PDF表示・保存・認証・API通信

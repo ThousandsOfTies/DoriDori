@@ -12,7 +12,7 @@ DoriDoriは、解答・採点結果・追加質問をパネルでつなぐ、Tut
 
 旧 `C:\VibeCode` のパスを使用しない。
 DoriDori固有のパネルUI・追加質問機能をTutoTutoへ自動的に取り込まない。
-ルートの `index.html` は旧UIモック。公開アプリの入口は `repos/doridori-app/src/main.tsx`。
+公開アプリのHTML入口は `repos/doridori-app/index.html`、Reactの入口は `repos/doridori-app/src/main.tsx`。旧UIモックは `docs/legacy-ui-mock.html` に保管する。
 
 ## 依存管理と修正先
 

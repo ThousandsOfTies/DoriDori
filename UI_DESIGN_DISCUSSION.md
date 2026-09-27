@@ -4,7 +4,7 @@
 
 この文書は現行実装と今後の設計案を区別して記録する。
 初期のHomeTeacherProtoは単一HTMLのモックだったが、現在は `repos/doridori-app` のReactアプリを使用する。
-ルートの `index.html` は旧モックとして残し、GitHub Pagesのデプロイ対象には含めない。
+旧モックは `docs/legacy-ui-mock.html` に保管し、GitHub Pagesのデプロイ対象には含めない。
 
 ## 現行実装
 
