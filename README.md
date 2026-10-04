@@ -1,6 +1,6 @@
 # DoriDori
 
-TutoTutoから派生した、PDF教材・手書き解答・AI採点をパネルでつなぐReactアプリ。
+TutoTutoから派生した、本の本文を参照した質問・先生の回答・追加質問をパネルでつなぐReactアプリ。
 
 公開用フロントエンドの設定先：[DoriDori](https://thousandsofties.github.io/DoriDori/)
 
@@ -8,13 +8,16 @@ TutoTutoから派生した、PDF教材・手書き解答・AI採点をパネル�
 
 - PDF・画像の取り込み、教材一覧、画像のPDF化と補正。
 - PDFのA/Bページ切替・左右分割、ペン・消しゴム・テキスト入力。
-- 「範囲を囲む → 解答記入 → AI採点 → 結果表示」のパネル遷移。
-- 採点結果を切り抜いて手書きの追加質問を入力し、再送信するUI。
-- パンくずによるパネル間の移動、採点履歴。
+- 「本の範囲を囲む → 質問を入力 → 本文を参照した先生の回答」のパネル遷移。
+- テキスト・音声入力・手書きによる質問と、先生の回答の一部を囲む追加質問。
+- PDF本文の索引作成、文字が少ないページのOCR、意味検索・文字検索による関連本文の取得。
+- Markdown・数式による回答、参照ページへの移動、先のページを参照するかの選択。
+- 質問・回答・分岐の保存、PDF上の履歴マーカー・パンくず・横ホイールによるパネル移動。
 - 共通管理画面のSNSリンク・利用時間設定、Googleログイン、課金連携。
 
-追加質問も現状は切り抜き画像を通常の採点APIへ送る。会話履歴や本全体は送信しない。
-会話履歴を使う対話、PDF全体のコンテキスト、SNS機能の除外は設計案であり、未実装。
+質問と追加質問は専用の `/api/book/ask` に、質問画像・質問文・検索で取得した本文・直前の先生の回答を送る。
+PDF全体を一度に送る方式ではなく、索引済みの本文から関連箇所を選ぶ。保存した会話履歴全体は送らない。
+索引が未完成でも現在ページを読み取り、利用できる本文で質問できる。プレミアム限定化とSNS機能の除外は未実装。
 詳しくは [UI設計メモ](UI_DESIGN_DISCUSSION.md) を参照。
 
 HTMLの入口は `repos/doridori-app/index.html`、Reactの入口は `repos/doridori-app/src/main.tsx`。
@@ -40,16 +43,17 @@ DoriDori/
 
 ## データとAPI
 
-- PDF・書き込み・設定・採点履歴は端末のIndexedDB `DoriDoriDB` に保存する。
-- 共通ライブラリの既定DB名は `TutoTutoDB`。各アプリのVite設定で上書きし、同一オリジン上でもデータを分離する。
+- PDF・書き込み・設定・質問と回答の履歴は端末のIndexedDB `DoriDoriDB` に保存する。既存の採点履歴用ストアも残っている。
+- 共通ライブラリには既定DB名がなく、`VITE_INDEXED_DB_NAME` の指定が必須。各アプリのVite設定で明示し、同一オリジン上でもデータを分離する。未指定・空白のみの場合は起動時に例外になる。
+- 本文・検索用の索引は別のIndexedDB `DoriDoriBookIndexDB` に保存する。
 - Googleログインとユーザー・課金情報はFirebase Authentication／Firestoreを使用する。
-- 採点はブラウザからExpress APIを経由してGeminiへ送信する。
+- 本の質問はブラウザからExpress APIの `/api/book/*` を経由してGeminiへ送信する。
 - 現行のフロント接続先は `.github/workflows/deploy.yml` の `VITE_API_URL`。TutoTutoとDoriDoriは同じCloud Run APIを使用する。
-- PWAは更新通知から適用する方式。AI採点や認証にはネットワーク接続が必要。
+- PWAは更新通知から適用する方式。AIへの質問、OCR・意味検索用の索引作成、認証にはネットワーク接続が必要。
 
 ## ローカル開発
 
-Node.js 20（CIと同じメジャーバージョン）、npm、Git、GNU MakeとUnix系シェルを使用する。
+Node.js 24（CIと同じメジャーバージョン）、npm、Git、GNU MakeとUnix系シェルを使用する。
 WindowsのPowerShellでは下記のnpmコマンドを直接実行できる。MakeコマンドはGNU Makeのある環境で実行する。
 PowerShellの実行ポリシーで `npm.ps1` が拒否される場合は、`npm` を `npm.cmd` に読み替える。
 
@@ -88,8 +92,9 @@ APIキーなどの秘密情報を `VITE_*` に入れない。
 `main` へのpushでGitHub Actionsが固定済みサブモジュールをcheckoutし、npmでビルド、
 `repos/doridori-app/dist` をGitHub Pagesに公開する。Cloud Run APIは別デプロイ。
 
-Cloud Runの更新はアプリ内の `npm run deploy:server` を使用する。
-共通コードを含む専用ソースを生成してからデプロイする。
+共有Cloud Run APIの本番・stagingの公開元は **TutoTutoの `repos/tutotuto-app`** に一本化する。
+DoriDori側の `npm run deploy:server` と `npm run deploy:server:staging` は案内を表示して停止し、Google Cloudへ接続しない。
+DoriDoriのAPI変更は必要な部分を公開元へ反映し、両アプリの採点・追加質問・本の質問を検証して公開する。
 詳しくは [APIデプロイ手順](repos/doridori-app/server/DEPLOYMENT.md) を参照。
 
 サブリポジトリの変更を先にcommit・pushし、その後メタで対象gitlinkをcommit・pushする。

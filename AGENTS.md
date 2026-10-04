@@ -3,7 +3,7 @@
 ## 対象と構成
 
 このファイルは `D:\Yurufuwa\DoriDori` 以下に適用する。
-DoriDoriは、解答・採点結果・追加質問をパネルでつなぐ、TutoTuto派生の学習アプリ。
+DoriDoriは、本の本文を参照した質問・先生の回答・追加質問をパネルでつなぐ、TutoTuto派生の学習アプリ。
 
 - メタリポジトリ：このディレクトリ（`main`）
 - アプリ：`repos/doridori-app`（`main`）
@@ -12,6 +12,7 @@ DoriDoriは、解答・採点結果・追加質問をパネルでつなぐ、Tut
 
 旧 `C:\VibeCode` のパスを使用しない。
 DoriDori固有のパネルUI・追加質問機能をTutoTutoへ自動的に取り込まない。
+TutoTutoにも採点結果への追加質問があるが、DoriDoriの本文索引・検索や読書用UIとは個別に管理する。
 公開アプリのHTML入口は `repos/doridori-app/index.html`、Reactの入口は `repos/doridori-app/src/main.tsx`。旧UIモックは `docs/legacy-ui-mock.html` に保管する。
 
 ## 依存管理と修正先
@@ -61,7 +62,8 @@ git status --short --branch
 - `@thousands-of-ties/drawing-common` → `../drawing-common/src`
 
 マシン固有の絶対パスをエイリアスに追加しない。
-IndexedDB名は `DoriDoriDB`。共通ライブラリの既定値 `TutoTutoDB` に戻さない。
+IndexedDB名は `DoriDoriDB`。Vite設定で `VITE_INDEXED_DB_NAME` を明示する。共通ライブラリに既定DB名はなく、未指定・空白のみは例外になる。
+本文・検索用の索引は別のIndexedDB `DoriDoriBookIndexDB` に保存する。
 IndexedDBはURLパスでは分離されないため、DB名やスキーマを変更する場合は既存データの移行・互換性を検討する。
 
 ## 起動・デプロイ
@@ -69,6 +71,8 @@ IndexedDBはURLパスでは分離されないため、DB名やスキーマを変
 - フロント：メタで `make dev`、または `repos/doridori-app` で `npm run dev`（Vite、既定3000）。
 - API：メタで `make dev-server`、または `repos/doridori-app` で `npm run dev:server`（Express、既定3003）。
 - TutoTutoとDoriDoriは現行のCloud Run APIを共有する。接続先は `.github/workflows/deploy.yml` で確認する。
+- 本番・stagingのAPI公開元はTutoTutoの `repos/tutotuto-app` に一本化する。DoriDori側の公開コマンドは停止する。`gcloud run deploy` による迂回もしない。
+- DoriDoriのAPI変更は必要な部分を公開元へ反映し、採点 `/api/grade-work`・追加質問 `/api/ask-question`・本の質問 `/api/book/*` を保持して検証する。
 - APIキーはサーバー側のみ。`VITE_API_URL` はAPIのベースURLで、末尾に `/api` を付けない。
 - ログは起動ターミナルへ出力される。固定の `/tmp/proto-server.log` は作成されない。
 - メタの `main` へのpushでGitHub Actionsが固定済みサブモジュールをビルドし、GitHub Pagesへ公開する。
