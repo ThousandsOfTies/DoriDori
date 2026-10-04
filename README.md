@@ -67,7 +67,7 @@ make dev-server
 ```
 
 Makeなしの初期設定は、メタで `git submodule update --init --recursive`、
-3つのサブモジュールそれぞれで `npm install`、
+3つのサブモジュールそれぞれで `npm install`、`repos/doridori-app/server` で `npm ci`、
 `repos/drawing-common` で `npm run build` を実行する。
 
 `repos/doridori-app` 内では次を使用する。
@@ -75,12 +75,17 @@ Makeなしの初期設定は、メタで `git submodule update --init --recursiv
 ```bash
 npm run dev          # Vite: http://localhost:3000
 npm run dev:server   # Express: http://localhost:3003
+npm run build:server # サーバーの型確認・本番ビルド
+npm run test:server  # サーバーの設定互換性・API起動テスト
 npm run dev:all      # 両方を起動
 npm run build       # フロントエンドの本番ビルド
 npm run typecheck
 ```
 
-サーバーが読む `repos/doridori-app/.env` に `GEMINI_API_KEY` を設定する。
+サーバー用の依存・設定・Dockerfileは `repos/doridori-app/server`、ソースはその `src/` にまとめる。
+サーバーの [.env.example](repos/doridori-app/server/.env.example) を参考に `server/.env` へ `GEMINI_API_KEY` を設定する。
+実行環境の変数、`server/.env`、従来のアプリ直下 `.env` の順に優先するため、既存の設定も引き続き利用できる。
+サーバー単体の起動・ビルドは [API README](repos/doridori-app/server/README.md) を参照。
 認証・課金を試す場合はサーバーのFirebase/Stripe設定も必要。
 フロント用の `.env.local` には `VITE_FIREBASE_*` と必要に応じて
 `VITE_API_URL=http://localhost:3003` を設定する。ベースURL末尾に `/api` を付けない。

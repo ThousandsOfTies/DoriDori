@@ -70,6 +70,8 @@ IndexedDBはURLパスでは分離されないため、DB名やスキーマを変
 
 - フロント：メタで `make dev`、または `repos/doridori-app` で `npm run dev`（Vite、既定3000）。
 - API：メタで `make dev-server`、または `repos/doridori-app` で `npm run dev:server`（Express、既定3003）。
+- サーバーのソースは `repos/doridori-app/server/src`。依存・ビルド設定・Dockerfileは `server/` にまとめ、`npm ci`・`npm run dev`・`npm run build` をそのディレクトリで実行できる。
+- API設定は `server/.env` を優先し、互換用にアプリ直下の `.env` も読む。実行環境の変数を上書きしない。
 - TutoTutoとDoriDoriは現行のCloud Run APIを共有する。接続先は `.github/workflows/deploy.yml` で確認する。
 - 本番・stagingのAPI公開元はTutoTutoの `repos/tutotuto-app` に一本化する。DoriDori側の公開コマンドは停止する。`gcloud run deploy` による迂回もしない。
 - DoriDoriのAPI変更は必要な部分を公開元へ反映し、採点 `/api/grade-work`・追加質問 `/api/ask-question`・本の質問 `/api/book/*` を保持して検証する。

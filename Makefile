@@ -32,6 +32,7 @@ install: init
 	@cd $(DRAWING_COMMON) && npm install
 	@cd $(HOME_TEACHER_COMMON) && npm install
 	@cd $(DORIDORI_APP) && npm install
+	@npm ci --prefix $(DORIDORI_APP)/server
 
 ## build-repos: Build shared libraries
 build-repos: init
