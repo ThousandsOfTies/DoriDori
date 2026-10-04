@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: make install
 
+      - name: Check types and unused code
+        run: npm --prefix repos/doridori-app run typecheck
+
       - name: Run regression tests
         run: |
           npm --prefix repos/drawing-common test
