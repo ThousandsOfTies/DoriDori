@@ -43,6 +43,7 @@ jobs:
 
       - name: Run regression tests
         run: |
+          npm --prefix repos/drawing-common test
           npm --prefix repos/home-teacher-common test
           npm --prefix repos/doridori-app test
 
