@@ -66,6 +66,8 @@ IndexedDB名は `DoriDoriDB`。Vite設定で `VITE_INDEXED_DB_NAME` を明示す
 本文・検索用の索引は別のIndexedDB `DoriDoriBookIndexDB` に保存する。
 索引作成はPDF内の文字をブラウザで取得し、本文テキストだけを送る。本の画像ページのAI文字起こしを追加しない。
 文字のないPDFはPDF24などで事前OCRする。旧 `/api/book/ocr` は410を返してAIを呼ばない。質問時の選択画像の送信は別に扱う。
+本の質問は `/api/book/ask-agent` でAIの本文要求に応じる。ブラウザは `search_book` と `read_book_pages` のみ実行し、現在ページを超える本文は利用者が許可した場合だけ返す。
+本文確認は最大2往復。共通の通信形式・上限はアプリの `shared/bookAgentProtocol.ts` で管理し、公開元TutoTutoへ反映する。全文画像OCRや自動的な本文事前送信を追加しない。
 IndexedDBはURLパスでは分離されないため、DB名やスキーマを変更する場合は既存データの移行・互換性を検討する。
 
 ## 起動・デプロイ
