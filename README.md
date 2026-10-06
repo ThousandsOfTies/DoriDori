@@ -26,6 +26,9 @@ AIが `search_book`（本文検索）や `read_book_pages`（ページの文字�
 文字情報がないページは索引から除外し、[PDF24のOCR](https://tools.pdf24.org/ja/ocr-pdf)などで文字を付けたPDFの取り込みを案内する。
 旧 `/api/book/ocr` は410を返してAIを呼ばない。保存済みの本文・索引は引き続き利用できる。
 索引がない本でも、質問時に選択した画像・図について先生へ質問できる。
+索引の作成・停止・再開は、PDF一覧の歯車から開くPDF設定画面の「本の索引」で行う。
+一覧の科目アイコンと表紙の間、PDF画面のホームボタンと「PDF」の間に同じ索引アイコンを表示する。
+緑のチェックは作成済み、時計は途中、グレーは未作成。文字情報のない本は別の注意表示になる。PDF画面のアイコンから状態・先のページの参照許可を確認できる。
 先生の回答を先に表示し、`/api/book/reference-media` でWikimedia Commonsの参考資料を後から検索する。
 検索結果は回答履歴に保存し、検索や画像の取得に失敗しても本文は読める。参考資料は本の原図や最新統計を保証するものではなく、各出典を確認できる。
 詳しくは [UI設計メモ](UI_DESIGN_DISCUSSION.md) を参照。
@@ -56,6 +59,7 @@ DoriDori/
 - PDF・書き込み・設定・質問と回答の履歴は端末のIndexedDB `DoriDoriDB` に保存する。既存の採点履歴用ストアも残っている。
 - 共通ライブラリには既定DB名がなく、`VITE_INDEXED_DB_NAME` の指定が必須。各アプリのVite設定で明示し、同一オリジン上でもデータを分離する。未指定・空白のみの場合は起動時に例外になる。
 - 本文・検索用の索引は別のIndexedDB `DoriDoriBookIndexDB` に保存する。
+- 一覧用の索引状態は `DoriDoriBookIndexStatusDB` に保存する。既存索引の初回表示時は実際のPDFページ数で完了状態を判定し、AIを呼ばずに状態を保存する。本文のDBは従来のバージョンのまま使う。
 - Googleログインとユーザー・課金情報はFirebase Authentication／Firestoreを使用する。
 - 本の質問はブラウザからExpress APIの `/api/book/*` を経由してGeminiへ送信する。
 - 現行のフロント接続先は `.github/workflows/deploy.yml` の `VITE_API_URL`。TutoTutoとDoriDoriは同じCloud Run APIを使用する。
