@@ -64,6 +64,8 @@ git status --short --branch
 マシン固有の絶対パスをエイリアスに追加しない。
 IndexedDB名は `DoriDoriDB`。Vite設定で `VITE_INDEXED_DB_NAME` を明示する。共通ライブラリに既定DB名はなく、未指定・空白のみは例外になる。
 本文・検索用の索引は別のIndexedDB `DoriDoriBookIndexDB` に保存する。
+索引作成はPDF内の文字をブラウザで取得し、本文テキストだけを送る。本の画像ページのAI文字起こしを追加しない。
+文字のないPDFはPDF24などで事前OCRする。旧 `/api/book/ocr` は410を返してAIを呼ばない。質問時の選択画像の送信は別に扱う。
 IndexedDBはURLパスでは分離されないため、DB名やスキーマを変更する場合は既存データの移行・互換性を検討する。
 
 ## 起動・デプロイ
