@@ -39,7 +39,7 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
-        run: make install
+        run: make install-frontend
 
       - name: Check types and unused code
         run: npm --prefix repos/doridori-app run typecheck

@@ -1,13 +1,14 @@
 # DoriDori project Makefile
 # Dependencies are pinned as Git submodules in .gitmodules.
 
-.PHONY: help setup init update install build-repos build clean status test dev dev-server
+.PHONY: help setup init update install install-frontend install-api build-repos build clean status test dev dev-server
 
 REPOS_DIR := repos
 DRAWING_COMMON := $(REPOS_DIR)/drawing-common
 HOME_TEACHER_COMMON := $(REPOS_DIR)/home-teacher-common
 DORIDORI_APP := $(REPOS_DIR)/doridori-app
-SUBMODULES := $(DRAWING_COMMON) $(HOME_TEACHER_COMMON) $(DORIDORI_APP)
+HOME_TEACHER_API := $(REPOS_DIR)/home-teacher-api
+SUBMODULES := $(HOME_TEACHER_API) $(DRAWING_COMMON) $(HOME_TEACHER_COMMON) $(DORIDORI_APP)
 
 .DEFAULT_GOAL := help
 
@@ -28,11 +29,17 @@ update:
 	@git submodule update --remote --recursive
 
 ## install: Install dependencies in every submodule
-install: init
+install: install-frontend install-api
+
+## install-frontend: Install frontend dependencies without API runtime packages
+install-frontend: init
 	@cd $(DRAWING_COMMON) && npm install
 	@cd $(HOME_TEACHER_COMMON) && npm install
 	@cd $(DORIDORI_APP) && npm install
-	@npm ci --prefix $(DORIDORI_APP)/server
+
+## install-api: Install the shared API dependencies
+install-api: init
+	@npm ci --prefix $(HOME_TEACHER_API)
 
 ## build-repos: Build shared libraries
 build-repos: init
@@ -46,7 +53,7 @@ build: build-repos
 dev: init
 	@cd $(DORIDORI_APP) && npm run dev
 
-## dev-server: Start the DoriDori API server on port 3003
+## dev-server: Start the DoriDori shared API server on port 3003
 dev-server: init
 	@cd $(DORIDORI_APP) && npm run dev:server
 

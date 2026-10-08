@@ -10,3 +10,7 @@
 	path = repos/doridori-app
 	url = https://github.com/ThousandsOfTies/doridori-app.git
 	branch = main
+[submodule "repos/home-teacher-api"]
+	path = repos/home-teacher-api
+	url = https://github.com/ThousandsOfTies/home-teacher-api.git
+	branch = main

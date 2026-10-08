@@ -51,7 +51,8 @@ DoriDori/
 └── repos/
     ├── drawing-common/      # Canvas描画基盤
     ├── home-teacher-common/ # 教材管理・PDF表示・保存・認証・API通信
-    └── doridori-app/ # アプリ固有のReact UI・Express API
+    ├── home-teacher-api/    # 両アプリの共有Express API・通信仕様
+    └── doridori-app/      # アプリ固有のReact UI
 ```
 
 依存コミットはGitサブモジュールのgitlinkで固定する。`VERSIONS`、`Repos.mk`、`make update-versions` は使用しない。
@@ -85,7 +86,7 @@ make dev-server
 ```
 
 Makeなしの初期設定は、メタで `git submodule update --init --recursive`、
-3つのサブモジュールそれぞれで `npm install`、`repos/doridori-app/server` で `npm ci`、
+描画・共通UI・アプリの3サブモジュールで `npm install`、`repos/home-teacher-api` で `npm ci`、
 `repos/drawing-common` で `npm run build` を実行する。
 
 `repos/doridori-app` 内では次を使用する。
@@ -100,10 +101,10 @@ npm run build       # フロントエンドの本番ビルド
 npm run typecheck
 ```
 
-サーバー用の依存・設定・Dockerfileは `repos/doridori-app/server`、ソースはその `src/` にまとめる。
-サーバーの [.env.example](repos/doridori-app/server/.env.example) を参考に `server/.env` へ `GEMINI_API_KEY` を設定する。
-実行環境の変数、`server/.env`、従来のアプリ直下 `.env` の順に優先するため、既存の設定も引き続き利用できる。
-サーバー単体の起動・ビルドは [API README](repos/doridori-app/server/README.md) を参照。
+サーバーの実装・依存・Dockerfileは兄弟サブモジュール `repos/home-teacher-api` にまとめる。
+[APIの設定例](https://github.com/ThousandsOfTies/home-teacher-api/blob/main/.env.example) を参考にAPI直下 `.env` へ `GEMINI_API_KEY` を設定する。
+実行環境の変数、API直下 `.env` の順に優先する。アプリから起動した場合だけ、従来のアプリ `server/.env` とアプリ直下 `.env` も互換用に読む。
+単体起動・ビルド・専用CIは [API README](https://github.com/ThousandsOfTies/home-teacher-api) を参照。
 認証・課金を試す場合はサーバーのFirebase/Stripe設定も必要。
 フロント用の `.env.local` には `VITE_FIREBASE_*` と必要に応じて
 `VITE_API_URL=http://localhost:3003` を設定する。ベースURL末尾に `/api` を付けない。
@@ -115,10 +116,11 @@ APIキーなどの秘密情報を `VITE_*` に入れない。
 `main` へのpushでGitHub Actionsが固定済みサブモジュールをcheckoutし、npmでビルド、
 `repos/doridori-app/dist` をGitHub Pagesに公開する。Cloud Run APIは別デプロイ。
 
-共有Cloud Run APIの本番・stagingの公開元は **TutoTutoの `repos/tutotuto-app`** に一本化する。
-DoriDori側の `npm run deploy:server` と `npm run deploy:server:staging` は案内を表示して停止し、Google Cloudへ接続しない。
-DoriDoriのAPI変更は必要な部分を公開元へ反映し、両アプリの採点・追加質問・本の質問を検証して公開する。
-詳しくは [APIデプロイ手順](repos/doridori-app/server/DEPLOYMENT.md) を参照。
+共有Cloud Run APIの本番・stagingのソースと公開元は独立リポジトリ `home-teacher-api`。
+API側で `npm run deploy:staging` により検証してから `npm run deploy:production` で公開する。両アプリの旧公開コマンドは移行先を案内して停止する。
+API専用CIがテストとDockerビルドを担当し、PagesのCIは `make install-frontend` によりフロント依存だけをインストールする。
+公開したAPIのコミットはCloud Runの `git-sha` ラベルで記録する。アプリが固定するAPIの版と本番の版は別管理で、既存フロントとの互換性を確認する。
+詳しくは [API公開手順](https://github.com/ThousandsOfTies/home-teacher-api/blob/main/DEPLOYMENT.md) を参照。
 
 サブリポジトリの変更を先にcommit・pushし、その後メタで対象gitlinkをcommit・pushする。
 

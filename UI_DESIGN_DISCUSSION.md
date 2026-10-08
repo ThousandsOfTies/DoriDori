@@ -111,13 +111,14 @@ JSON形式の検索語・選択結果は [Geminiの構造化出力](https://ai.g
 ## APIの共有と公開元
 
 TutoTutoとDoriDoriの本番APIは同じCloud Runサービス。
-共有サーバーの公開元はTutoTutoの `repos/tutotuto-app` に一本化し、
+共有サーバーのソースと公開元は独立リポジトリ `home-teacher-api` に一本化し、両メタで `repos/home-teacher-api` として固定する。
 採点 `/api/grade-work`、TutoTutoの追加質問 `/api/ask-question`、DoriDoriの `/api/book/*` を保持する。
 
-DoriDoriのローカルサーバーには `/api/ask-question` がないため、共有APIを直接上書きしない。
-DoriDori側の本番・staging公開コマンドは案内を表示して停止する。
-サーバー変更は必要なAPI部分を公開元へ反映して検証する。読書用UI・本文索引をTutoTutoへ自動的に取り込む方針ではない。
-詳細は [API公開手順](repos/doridori-app/server/DEPLOYMENT.md) を参照。
+DoriDoriのローカル起動も同じ共有APIを使い、`/api/ask-question` を含む。アプリ側にサーバー実装のコピーを保持しない。
+両アプリの旧公開コマンドは移行先を案内して停止し、本番・stagingの公開はAPIリポジトリで行う。
+本文要求の通信形式・上限もAPIの `contracts/bookAgentProtocol.ts` を参照する。
+読書用UI・本文索引をTutoTutoへ自動的に取り込む方針ではない。
+詳細は [API公開手順](https://github.com/ThousandsOfTies/home-teacher-api/blob/main/DEPLOYMENT.md) を参照。
 
 ## 今後の設計案（未実装）
 
